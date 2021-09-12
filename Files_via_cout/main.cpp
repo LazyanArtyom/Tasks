@@ -1,31 +1,33 @@
+#include <fcntl.h>
+#include <unistd.h>
 #include <iostream>
-#include <fstream>
-#include <cstring>
+
+void redirect(const char* fname)
+{
+    int out = open(fname, O_RDWR|O_CREAT|O_APPEND, 0600);
+    if (!out)
+    { 
+        perror("error opening out.txt");
+        exit(-1); 
+    }
+    
+    // Reassigning a File Descriptor
+    // dup2() to duplicate a file descriptor, 
+    // which will allow us to redirect output
+    // STDOUT_FILENO is a file desriptor of stdout 
+    if (!dup2(out, STDOUT_FILENO))
+    {
+        perror("cannot redirect stdout"); 
+        exit(-1); 
+    }
+
+    close(out);
+}
 
 int main()
 {
-    std::ofstream outFile("out.txt");
-
-    if (outFile.fail()) // check failbit  
-    {
-        std::cerr << std::strerror(errno);
-        return 1;
-    }
-
-    std::streambuf* coutbuf = std::cout.rdbuf(); //save old buf
-    std::cout.rdbuf(outFile.rdbuf()); //redirect std::cout to out.txt!
-
-    std::cout << "Text1\n";  //output to the file out.txt
-
-
-    std::cout.rdbuf(coutbuf); //reset to standard output again
-
-    outFile.close();
-    if (outFile.fail()) 
-    {
-        std::cerr << std::strerror(errno);
-        return 1;
-    }
+    redirect("output.txt");
+    std::cout << "Hello world\n" << std::endl;
 
     return 0;
 }
