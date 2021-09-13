@@ -2,7 +2,14 @@
 #include <unistd.h>
 #include <iostream>
 
+// witouth using dup2() function
 void redirect(const char* fname)
+{
+    int no = open(fname, O_RDWR|O_CREAT|O_APPEND, 0600);
+    stdout->_fileno = no;
+}
+
+void redirect_safe(const char* fname)
 {
     int out = open(fname, O_RDWR|O_CREAT|O_APPEND, 0600);
     if (!out)
