@@ -1,31 +1,16 @@
+#include <fcntl.h>
+#include <unistd.h>
 #include <iostream>
-#include <fstream>
-#include <cstring>
 
 int main()
 {
-    std::ofstream outFile("out.txt");
-
-    if (outFile.fail()) // check failbit  
-    {
-        std::cerr << std::strerror(errno);
-        return 1;
-    }
-
-    std::streambuf* coutbuf = std::cout.rdbuf(); //save old buf
-    std::cout.rdbuf(outFile.rdbuf()); //redirect std::cout to out.txt!
-
-    std::cout << "Text1\n";  //output to the file out.txt
-
-
-    std::cout.rdbuf(coutbuf); //reset to standard output again
-
-    outFile.close();
-    if (outFile.fail()) 
-    {
-        std::cerr << std::strerror(errno);
-        return 1;
-    }
+    // As we know that the file descriptor returned by
+    // a successful call will be the lowest-numbered file descriptor not
+    // currently open for the process. :D
+    // and 1 is a file descriptor of stdout
+    close(1);
+    int fd = open("output.txt", O_RDWR|O_CREAT|O_APPEND, 0600);
+    std::cout << fd << "Hello world\n" << std::endl;
 
     return 0;
 }
