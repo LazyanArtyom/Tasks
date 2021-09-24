@@ -1,7 +1,7 @@
 #ifndef TAF_TESTFRAMEWORK_H_
 #define TAF_TESTFRAMEWORK_H_
 
-#include "sink/sink.h"
+#include "pipe.h"
 
 #include <any>
 #include <vector>
@@ -12,17 +12,27 @@ namespace taf {
 
 class TestFramework
 {
-    using SinkCollectionType = std::vector<std::unique_ptr<impl::ISink>>;
     using TestMapContainerType = std::vector<std::pair<std::string, std::function<bool()>>>;
 public:
-    void runTests();
+    TestFramework(bool isRedirectToFile) : isRedirectToFile_{isRedirectToFile} {}
 
-    void log(const std::stringstream& str);
-    void addSink(std::unique_ptr<impl::ISink> sinkPtr);
+    /**
+    * Runs all tests and redirects to stdout or file
+    */
+    void runTests();
     void addTest(std::string testName, std::function<bool()> funcPtr);
 
+    /**
+    * An exception type for any unrecoverable errors that occur during
+    * pipe operations.
+    */
+    class exception : public std::runtime_error
+    {
+    public:
+        using std::runtime_error::runtime_error;
+    };
 private:
-    SinkCollectionType   sinks_;
+    bool isRedirectToFile_ = false;
     TestMapContainerType testcases_;
 };
 

@@ -1,15 +1,11 @@
 #include "testframework.h"
-#include "sink/sinkfile.h"
-#include "sink/sinkconsole.h"
 
 #include <memory>
 #include <iostream>
 
 int main()
 {
-    taf::TestFramework test;
-    test.addSink(std::make_unique<taf::SinkConsole>());
-    test.addSink(std::make_unique<taf::SinkFile>("result.log"));
+    taf::TestFramework test(true);
  
     test.addTest("TestCase1", []{
         return true;
