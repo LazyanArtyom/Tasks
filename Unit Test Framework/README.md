@@ -10,7 +10,7 @@ This project depends on CMake, which need to be installed prior to build and run
 ## Building and run
 
 ``` bash
-> cd mkdir build && cd build
+> mkdir build && cd build
 > cmake .. && cmake --build .
 > ./test_automation_framework
 ```
