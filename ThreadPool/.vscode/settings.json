@@ -1,0 +1,23 @@
+{
+    "files.associations": {
+        "atomic": "cpp",
+        "thread": "cpp",
+        "array": "cpp",
+        "*.tcc": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "fstream": "cpp",
+        "istream": "cpp",
+        "sstream": "cpp",
+        "functional": "cpp",
+        "type_traits": "cpp",
+        "tuple": "cpp",
+        "chrono": "cpp",
+        "condition_variable": "cpp",
+        "memory_resource": "cpp",
+        "mutex": "cpp",
+        "typeinfo": "cpp"
+    }
+}
