@@ -27,7 +27,7 @@ class Fifo
     void write(const char* buf, uint64_t length);
 
     void close();
-    void open(int flag);
+    int open(int flag);
 
     /**
      * Redirects the given file descriptor to the given descriptor.

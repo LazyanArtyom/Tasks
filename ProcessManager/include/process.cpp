@@ -60,7 +60,7 @@ ssize_t Fifo::read(char* buf, uint64_t length)
     return bytes;
 }
 
-void Fifo::open(int flag)
+int Fifo::open(int flag)
 {
     if (flag == O_WRONLY || flag == O_RDONLY)
         fd_ = ::open(fifoPath_.c_str(), flag);
@@ -71,7 +71,9 @@ void Fifo::open(int flag)
     {
         perror("open: ");
         throw exception{"Can't open file"};
-    } 
+    }
+
+    return fd_;
 }
 
 void Fifo::close()
