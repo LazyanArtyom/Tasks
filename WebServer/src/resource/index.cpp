@@ -6,7 +6,7 @@ struct GetRequest : public http::IFunctionRequest
     void operator()()
     {
         std::cout << 
-        "<h1>Main page</h1>\n\n <a href=\"/students\">Click to see student list</a>";
+        "<h1>Main page</h1>\n\n <a href=\"/students\">Click to see student list</a> <img src=\"/alooo.jpg\" alt=\"Girl in a jacket\">";
     }
 };
 

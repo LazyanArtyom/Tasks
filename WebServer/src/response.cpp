@@ -66,7 +66,7 @@ namespace http
 
     void Response::setContentType(const std::string &contentType)
     {
-        contentType_ = contentType_;
+        contentType_ = contentType;
     }
 
     std::string Response::getContentType() const
@@ -84,7 +84,7 @@ namespace http
         return resourceSizeInBytes_;
     }
 
-    std::string Response::toString()
+    std::string Response::getResponseStatus()
     {
         std::string responseStatus;
 
@@ -116,9 +116,6 @@ namespace http
         responseStatus += std::string("AcceptRanges: bytes") + "\n";
         responseStatus += std::string("Connection: Closed") + "\n";
         responseStatus += std::string("Date: ") + timeStr + "\n";
-
-        if (resourceSizeInBytes_ > 0)
-            responseStatus += resourceBuffer_.get();
 
         return responseStatus;
     }

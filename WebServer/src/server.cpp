@@ -107,7 +107,7 @@ namespace http
             exit(EXIT_FAILURE);
         }
         else if (pid == 0)
-        { 
+        {
             char *argv[] = {path.data(), method.data(), arg.data(), nullptr};
 
             close(pipeFd[0]);
@@ -138,18 +138,29 @@ namespace http
     {
         if (client != nullptr)
         {
-            std::string response = httpResponse->toString();
+            std::string responseStatus = httpResponse->getResponseStatus();
+            int resourceSizeInBytes = httpResponse->getResourceSizeInBytes();
 
             std::cout << "[ Handling Client: " << client->userId << " ]" << std::endl;
             std::cout << "Response:\n{" << std::endl;
-            std::cout << response;
+            std::cout << responseStatus;
             std::cout << "}" << std::endl;
 
             if (write(client->socketFd,
-                      response.c_str(),
-                      response.size()) < 0)
+                      responseStatus.c_str(),
+                      responseStatus.size()) < 0)
             {
                 perror("ERROR: write to descriptor failed");
+            }
+
+            if (resourceSizeInBytes > 0)
+            {
+                if (write(client->socketFd,
+                          httpResponse->getResourceBuffer().get(),
+                          httpResponse->getResourceSizeInBytes()) < 0)
+                {
+                    perror("ERROR: write to descriptor failed");
+                }
             }
         }
     }
@@ -183,14 +194,14 @@ namespace http
 
         std::cout << "****************************************************\n";
         std::cout << "Path " << resourceFilePath << std::endl;
-        std::cout << "Method " << "GET" << std::endl;
-        std::cout << "Arg " << lastToken  << std::endl;
+        std::cout << "Method "
+                  << "GET" << std::endl;
+        std::cout << "Arg " << lastToken << std::endl;
         std::cout << "****************************************************\n";
-
 
         // execute program
         if (std::filesystem::exists(resourceFilePath + ".out"))
-        { 
+        {
             std::string result = execute("GET", resourceFilePath + ".out", hasArg ? lastToken : std::string());
 
             std::cout << "Executet result = \n{\n"

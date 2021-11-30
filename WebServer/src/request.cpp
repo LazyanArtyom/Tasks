@@ -1,5 +1,6 @@
 #include "request.h"
 
+#include <iostream>
 #include <sstream>
 #include <unordered_map>
 
@@ -67,16 +68,18 @@ namespace http
 
     std::string Request::getContentType() const
     {
-        size_t pos = resource_.rfind('.');
-        if (pos == std::string::npos)
-            return std::string();
+        std::size_t lastTokenLen = resource_.find_last_of(".\\");
+        std::string lastToken = resource_.substr(lastTokenLen + 1);
 
-        std::string ext = resource_.substr(pos + 1);
+        if (lastToken == "jpg")
+            lastToken = "jpeg";
 
-        if (ext == "jpg")
-            ext == "jpeg";
+        std::cout << "***************************************" << std::endl;
+        std::cout << "lasttToke: " << lastToken << std::endl;
+        std::cout << "contentType: " << ConentTypeTable[lastToken] << std::endl;
 
-        return ConentTypeTable[ext];
+        std::cout << "***************************************" << std::endl;
+        return "Content-Type: " + ConentTypeTable[lastToken];
     }
 
     /////////////////////////////////////////////////

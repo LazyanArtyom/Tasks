@@ -41,7 +41,7 @@ namespace http
         void setResourceSizeInBytes(unsigned int size);
         unsigned int getResourceSizeInBytes() const;
 
-        std::string toString();
+        std::string getResponseStatus();
 
     private:
         HttpMethods method_;
