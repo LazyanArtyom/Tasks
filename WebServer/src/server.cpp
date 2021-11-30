@@ -7,11 +7,11 @@
 
 #include <fcntl.h>
 #include <sys/wait.h>
- 
+
 namespace http
 {
     std::string Server::resourceDirectoryPath_ = "";
-    
+
     // helpers
     bool isNumber(const std::string &str)
     {
@@ -23,7 +23,7 @@ namespace http
         return true;
     }
 
-    Server::Server(const std::string& resourceDirectoryPath, const std::string &ip, int port)
+    Server::Server(const std::string &resourceDirectoryPath, const std::string &ip, int port)
     {
         resourceDirectoryPath_ = resourceDirectoryPath;
 
@@ -107,7 +107,7 @@ namespace http
             exit(EXIT_FAILURE);
         }
         else if (pid == 0)
-        {
+        { 
             char *argv[] = {path.data(), method.data(), arg.data(), nullptr};
 
             close(pipeFd[0]);
@@ -156,19 +156,19 @@ namespace http
 
     void Server::processGetRequest(std::shared_ptr<Response> response, clientType *client)
     {
-        if (response->getResource().empty())
+        std::string resource = response->getResource();
+        if (resource.empty())
         {
             response->setResponseStatusCode(400);
             sendResponse(response, client);
             return;
         }
 
-        if (response->getResource().compare("/") == 0)
+        if (resource.compare("/") == 0)
         {
-            response->setResource("/index");
+            resource = "/index";
         }
 
-        std::string resource = response->getResource();
         std::size_t lastTokenLen = resource.find_last_of("/\\");
         std::string lastToken = resource.substr(lastTokenLen + 1);
 
@@ -177,14 +177,20 @@ namespace http
         if (isNumber(lastToken))
         {
             hasArg = true;
-            resourceFilePath = resource.substr(0, lastTokenLen) + ".out";
+            resourceFilePath = resourceDirectoryPath_;
+            resourceFilePath += (resource.substr(0, lastTokenLen));
         }
+
+        std::cout << "****************************************************\n";
+        std::cout << "Path " << resourceFilePath << std::endl;
+        std::cout << "Method " << "GET" << std::endl;
+        std::cout << "Arg " << lastToken  << std::endl;
+        std::cout << "****************************************************\n";
+
 
         // execute program
         if (std::filesystem::exists(resourceFilePath + ".out"))
-        {
-            std::cout << "Found " << resourceFilePath + ".out file\n";
-
+        { 
             std::string result = execute("GET", resourceFilePath + ".out", hasArg ? lastToken : std::string());
 
             std::cout << "Executet result = \n{\n"
@@ -195,7 +201,7 @@ namespace http
 
             strcpy(response->getResourceBuffer().get(), result.c_str());
             sendResponse(response, client);
-            
+
             return;
         }
 

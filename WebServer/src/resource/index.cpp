@@ -1,16 +1,23 @@
 #include <iostream>
-#include <string.h>
+#include "requestmanager.h"
 
-void get()
+struct GetRequest : public http::IFunctionRequest
 {
-    std::cout << 
-    "<h1>Main page</h1>\n\n <a href=\"/students\">Click to see student list</a>";
-}
+    void operator()()
+    {
+        std::cout << 
+        "<h1>Main page</h1>\n\n <a href=\"/students\">Click to see student list</a>";
+    }
+};
 
 int main(int argc, char* argv[])
 {
-    if (argc > 1 && strcmp(argv[1], "GET") == 0)
-        get();
+
+    http::RequestManager mgr;
+    
+    mgr.registerRequest("GET", std::make_unique<GetRequest>());
+    
+    mgr.handleRequest(argc, argv);
 
     return 0;
 }
